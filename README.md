@@ -2,6 +2,16 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+To start working with the project you will need to download: `bun`, `npm`.
+
+after downloading check the versions:
+
+`bun -v`, `npm -v`
+
+then download the dependencies:
+
+`bun install`
+
 First, run the development server:
 
 ```bash
