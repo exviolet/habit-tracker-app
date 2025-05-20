@@ -147,41 +147,41 @@ export default function EditHabitPage({
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">Редактирование привычки</h1>
+        <h1 className="text-2xl font-bold">Әдетті өңдеу</h1>
       </div>
 
       <Card>
         <form onSubmit={handleSubmit}>
           <CardHeader>
-            <CardTitle>Обновление привычки</CardTitle>
+            <CardTitle>Әдетті жаңарту</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Название *</Label>
+              <Label htmlFor="name">Аты *</Label>
               <Input
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Например: Пить воду"
+                placeholder="Мысалы: Кітап оқу"
                 required
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="description">Описание</Label>
+              <Label htmlFor="description">Сипаттама</Label>
               <Textarea
                 id="description"
                 name="description"
                 value={formData.description || ""}
                 onChange={handleChange}
-                placeholder="Необязательное описание привычки"
+                placeholder="Әдеттің қосымша сипаттамасы"
                 rows={3}
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="frequency">Частота *</Label>
+              <Label htmlFor="frequency">Жиілігі *</Label>
               <Select
                 value={formData.frequency}
                 onValueChange={(value) =>
@@ -189,18 +189,18 @@ export default function EditHabitPage({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Выберите частоту" />
+                  <SelectValue placeholder="Жиілігті таңдау" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="daily">Ежедневно</SelectItem>
-                  <SelectItem value="weekly">Еженедельно</SelectItem>
-                  <SelectItem value="specificDays">По дням недели</SelectItem>
+                  <SelectItem value="daily">Күнделікті</SelectItem>
+                  <SelectItem value="weekly">Апта сайын</SelectItem>
+                  <SelectItem value="specificDays">Апта күндері бойынша</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="goal">Цель (количество) *</Label>
+              <Label htmlFor="goal">Мақсаты (саны) *</Label>
               <Input
                 id="goal"
                 name="goal"
@@ -213,7 +213,7 @@ export default function EditHabitPage({
             </div>
 
             <div className="grid gap-2">
-              <Label>Иконка *</Label>
+              <Label>Белгіше *</Label>
               <IconSelector
                 selectedIcon={formData.icon || "star"}
                 onSelectIcon={(icon) => handleSelectChange("icon", icon)}
@@ -222,10 +222,10 @@ export default function EditHabitPage({
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button variant="outline" className="w-1/2" onClick={() => router.back()}>
-              Отмена
+              Болдырмау
             </Button>
             <Button className="w-1/2" type="submit">
-              Сохранить
+              Сақтау
             </Button>
           </CardFooter>
         </form>

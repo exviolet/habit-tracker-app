@@ -56,17 +56,17 @@ export default function SettingsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Настройки</h1>
+      <h1 className="text-2xl font-bold">Параметрлер</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Внешний вид</CardTitle>
+          <CardTitle className="text-lg">Сыртқы түрі</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isDark ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-              <Label htmlFor="theme-toggle">Темная тема</Label>
+              <Label htmlFor="theme-toggle">Түнгі тема</Label>
             </div>
             <Switch
               id="theme-toggle"
@@ -79,12 +79,12 @@ export default function SettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Язык</CardTitle>
+          <CardTitle className="text-lg">Тіл</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-2">
             <Globe className="h-5 w-5" />
-            <Label>Выберите язык</Label>
+            <Label>Тілді таңдаңыз</Label>
           </div>
           <Select value={language} onValueChange={handleLanguageChange}>
             <SelectTrigger>
@@ -103,7 +103,7 @@ export default function SettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg text-destructive">Опасная зона</CardTitle>
+          <CardTitle className="text-lg text-destructive">Қауіпті аймақ</CardTitle>
         </CardHeader>
         <CardContent>
           <Button
@@ -111,10 +111,10 @@ export default function SettingsPage() {
             className="w-full"
             onClick={clearAllData}
           >
-            Удалить все данные
+            Барлық деректерді жою
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Это действие удалит все ваши привычки и историю прогресса. Это действие нельзя отменить.
+            Бұл әрекет сіздің барлық әдеттеріңізді және прогресс тарихын жояды. Бұл әрекетті жою мүмкін емес.
           </p>
         </CardContent>
       </Card>

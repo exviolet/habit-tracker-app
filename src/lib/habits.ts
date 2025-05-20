@@ -1,5 +1,6 @@
 "use client";
 
+import { normalizeDate } from "./utils";
 import type { Habit, NewHabit, HabitProgress, FrequencyType, WeekdayType } from "@/types/habit";
 
 // Интерфейс для сырых данных из localStorage
@@ -123,9 +124,9 @@ export function updateHabitProgress(
   const habit = habits[habitIndex];
 
   // Проверяем, есть ли уже запись за этот день
-  const dateString = date.toISOString().split('T')[0];
+  const normalizedDate = normalizeDate(date);
   const progressIndex = habit.progress.findIndex(
-    p => p.date.toISOString().split('T')[0] === dateString
+    p => normalizeDate(p.date).getTime() === normalizedDate.getTime()
   );
 
   const updatedHabits = [...habits];
@@ -134,7 +135,7 @@ export function updateHabitProgress(
     // Обновляем существующую запись
     const updatedProgress = [...habit.progress];
     updatedProgress[progressIndex] = {
-      date,
+      date: normalizedDate,
       value,
       completed: value >= habit.goal
     };
@@ -150,7 +151,7 @@ export function updateHabitProgress(
       progress: [
         ...habit.progress,
         {
-          date,
+          date: normalizedDate,
           value,
           completed: value >= habit.goal
         }
@@ -167,9 +168,9 @@ export function getProgressForDate(habitId: string, date: Date): HabitProgress |
   const habit = getHabitById(habitId);
   if (!habit) return undefined;
 
-  const dateString = date.toISOString().split('T')[0];
+  const normalizedTarget = normalizeDate(date).getTime();
   return habit.progress.find(
-    p => p.date.toISOString().split('T')[0] === dateString
+    p => normalizeDate(p.date).getTime() === normalizedTarget
   );
 }
 

@@ -118,6 +118,14 @@ export function HabitCard({ habit }: HabitCardProps) {
     }
   };
 
+  const handleDecrement = () => {
+  const newValue = Math.max(0, todayProgress.value - 1);
+  const updatedHabit = updateHabitProgress(habit.id, new Date(), newValue);
+  if (updatedHabit) {
+    setLocalHabit(updatedHabit);
+  }
+};
+
   return (
     <Card className="relative">
       <CardHeader className="pb-2">
@@ -139,7 +147,7 @@ export function HabitCard({ habit }: HabitCardProps) {
               <DropdownMenuItem asChild>
                 <Link href={`/edit-habit/${habit.id}`}>
                   <Edit className="mr-2 h-4 w-4" />
-                  <span>Редактировать</span>
+                  <span>Өңдеу</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -147,7 +155,7 @@ export function HabitCard({ habit }: HabitCardProps) {
                 onClick={() => setShowConfirmDelete(true)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                <span>Удалить</span>
+                <span>Жою</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -171,13 +179,24 @@ export function HabitCard({ habit }: HabitCardProps) {
 
       <CardFooter className="pt-2">
         <div className="flex justify-between w-full">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleIncrement}
-          >
-            +1
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDecrement}
+              disabled={todayProgress.value === 0}
+            >
+              -1
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleIncrement}
+            >
+              +1
+            </Button>
+          </div>
 
           <Button
             variant={todayProgress.completed ? "secondary" : "default"}
@@ -188,10 +207,10 @@ export function HabitCard({ habit }: HabitCardProps) {
             {todayProgress.completed ? (
               <>
                 <Check className="mr-1 h-4 w-4" />
-                Выполнено
+                Орындалды
               </>
             ) : (
-              "Отметить выполнение"
+              "Орындалуын белгілеу"
             )}
           </Button>
         </div>
@@ -200,19 +219,19 @@ export function HabitCard({ habit }: HabitCardProps) {
       <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
+            <AlertDialogTitle>Сіз бұл әдетті жоюға сенімдісіз бе?</AlertDialogTitle>
             <AlertDialogDescription>
-              Это действие удалит привычку "{habit.name}" и всю историю ее выполнения.
-              Это действие нельзя отменить.
+              Бұл әрекет "{habit.name}" әдетін және оны орындаудың бүкіл тарихын жояды.
+              Бұл әрекетті жою мүмкін емес.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogCancel>Болдырмау</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Удалить
+              Жою
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

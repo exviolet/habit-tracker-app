@@ -24,13 +24,13 @@ export function ModeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Светлая
+          Жарық
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Темная
+          Түнгі
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          Системная
+          Жүйелік
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

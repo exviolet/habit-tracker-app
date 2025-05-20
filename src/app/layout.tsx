@@ -7,8 +7,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Habit Tracker - Отслеживание привычек",
-  description: "Отслеживайте свои привычки и улучшайте свою жизнь",
+  title: "Habit Tracker - Әдеттерді бақылау",
+  description: "Әдеттеріңізді бақылаңыз және өміріңізді жақсартыңыз",
 };
 
 export default function RootLayout({

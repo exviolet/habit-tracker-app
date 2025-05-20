@@ -19,7 +19,7 @@ export default function HabitsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Привычки</h1>
+        <h1 className="text-2xl font-bold">Әдеттер</h1>
         <div className="flex items-center gap-2">
           <ModeToggle />
           <Link href="/add-habit">
@@ -33,10 +33,10 @@ export default function HabitsPage() {
       {habits.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
           <p className="text-muted-foreground text-center">
-            У вас пока нет привычек. Создайте свою первую привычку, нажав на кнопку "+".
+            Сізде әлі әдеттер жоқ. "+" батырмасын басып, Алғашқы әдетіңізді қосыңыз.
           </p>
           <Link href="/add-habit">
-            <Button>Добавить привычку</Button>
+            <Button>Әдет қосу</Button>
           </Link>
         </div>
       ) : (

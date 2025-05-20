@@ -17,7 +17,7 @@ export function Navigation() {
           }`}
         >
           <Home className="h-6 w-6" />
-          <span className="text-xs">Привычки</span>
+          <span className="text-xs">Әдеттер</span>
         </Link>
 
         <Link
@@ -27,7 +27,7 @@ export function Navigation() {
           }`}
         >
           <Calendar className="h-6 w-6" />
-          <span className="text-xs">Календарь</span>
+          <span className="text-xs">Күнтізбе</span>
         </Link>
 
         <Link
@@ -37,7 +37,7 @@ export function Navigation() {
           }`}
         >
           <Settings className="h-6 w-6" />
-          <span className="text-xs">Настройки</span>
+          <span className="text-xs">Параметрлер</span>
         </Link>
       </div>
     </div>

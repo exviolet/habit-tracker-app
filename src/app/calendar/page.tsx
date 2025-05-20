@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, subMonths, getDay, isToday } from "date-fns";
-import { ru } from "date-fns/locale";
+import { ka, kk, ru } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,7 +36,7 @@ export default function CalendarPage() {
   const startWeekDay = getDay(monthStart);
 
   // Названия дней недели
-  const weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+  const weekDays = ["Дс", "Сс", "Ср", "Бс", "Жм", "Сб", "Жк"];
 
   // Переход к следующему месяцу
   const nextMonth = () => {
@@ -62,26 +62,26 @@ export default function CalendarPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Календарь привычек</h1>
+      <h1 className="text-2xl font-bold">Әдеттер күнтізбесі</h1>
 
       {habits.length === 0 ? (
         <Card>
           <CardContent className="p-6">
             <p className="text-center text-muted-foreground">
-              У вас пока нет привычек. Создайте привычки для отслеживания в календаре.
+              Сізде әлі әдеттеріңіз жоқ. Күнтізбеде бақылау үшін әдеттерді жасаңыз.
             </p>
           </CardContent>
         </Card>
       ) : (
         <>
           <div className="grid gap-2">
-            <label className="text-sm font-medium">Выберите привычку</label>
+            <label className="text-sm font-medium">Әдетті таңдаңыз</label>
             <Select
               value={selectedHabit}
               onValueChange={setSelectedHabit}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Выберите привычку" />
+                <SelectValue placeholder="Әдетті таңдаңыз" />
               </SelectTrigger>
               <SelectContent>
                 {habits.map(habit => (
@@ -100,7 +100,7 @@ export default function CalendarPage() {
                   <ChevronLeft />
                 </Button>
                 <CardTitle>
-                  {format(currentDate, "LLLL yyyy", { locale: ru })}
+                  {format(currentDate, "LLLL yyyy", { locale: kk })}
                 </CardTitle>
                 <Button variant="ghost" size="icon" onClick={nextMonth}>
                   <ChevronRight />
@@ -146,11 +146,11 @@ export default function CalendarPage() {
               <div className="flex gap-2 mt-4 text-xs">
                 <div className="flex items-center gap-1">
                   <div className="h-3 w-3 rounded-full bg-green-500/20" />
-                  <span>Выполнено</span>
+                  <span>Орындалды</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="h-3 w-3 rounded-full bg-red-500/20" />
-                  <span>Не выполнено</span>
+                  <span>Орындалмады</span>
                 </div>
               </div>
             </CardContent>
