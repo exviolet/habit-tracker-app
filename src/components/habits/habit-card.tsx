@@ -8,6 +8,7 @@ import {
   Edit,
   Archive,
   MoreVertical,
+  SortAsc,
   Book,
   Bike,
   Clock,
@@ -55,7 +56,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import type { Habit } from "@/types/habit";
 import { getCategories } from "@/lib/categories";
-import { archiveHabit, updateHabitProgress, getProgressForDate } from "@/lib/habits";
+import { archiveHabit, updateHabitProgress, getProgressForDate, saveHabitOrder } from "@/lib/habits";
 
 export function HabitIcon({ icon }: { icon: string }) {
   const size = 24;
@@ -81,7 +82,6 @@ export function HabitIcon({ icon }: { icon: string }) {
     fuel: <Fuel size={size} />,
   };
 
-  // Если icon — это emoji, преобразуем его в ключ
   const iconMap: Record<string, string> = {
     "📚": "book",
     "🚲": "bicycle",
@@ -105,22 +105,19 @@ export function HabitIcon({ icon }: { icon: string }) {
   };
 
   const iconKey = iconMap[icon] || icon;
-  const selectedIcon = icons[iconKey] || <Star size={size} />;
-
-  // Отладочная информация
-  console.log(`HabitIcon: icon=${icon}, mapped to=${iconKey}, selectedIcon exists=${!!selectedIcon}`);
-
-  return selectedIcon;
+  return icons[iconKey] || <Star size={size} />;
 }
 
 interface HabitCardProps {
   habit: Habit;
   onChange?: () => void;
+  habitsList?: Habit[]; // Для передачи списка привычек в модальное окно
 }
 
-export function HabitCard({ habit, onChange }: HabitCardProps) {
+export function HabitCard({ habit, onChange, habitsList = [] }: HabitCardProps) {
   const [localHabit, setLocalHabit] = useState(habit);
   const [showConfirmArchive, setShowConfirmArchive] = useState(false);
+  const [showSortDialog, setShowSortDialog] = useState(false);
   const categories = getCategories();
   const habitCategories = categories.filter((cat) => habit.categoryIds?.includes(cat.id));
 
@@ -156,6 +153,10 @@ export function HabitCard({ habit, onChange }: HabitCardProps) {
     }
   };
 
+  const handleSort = () => {
+    setShowSortDialog(true);
+  };
+
   return (
     <Card className="relative">
       <CardHeader className="pb-2">
@@ -178,6 +179,10 @@ export function HabitCard({ habit, onChange }: HabitCardProps) {
                   <Edit className="mr-2 h-4 w-4" />
                   <span>Редактировать</span>
                 </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSort}>
+                <SortAsc className="mr-2 h-4 w-4" />
+                <span>Отсортировать привычки</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
@@ -269,6 +274,20 @@ export function HabitCard({ habit, onChange }: HabitCardProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {showSortDialog && (
+        <SortDialog
+          habits={habitsList}
+          onClose={() => setShowSortDialog(false)}
+          onSort={(sortedHabits) => {
+            // Здесь можно будет сохранить новый порядок
+            console.log("Sorted habits:", sortedHabits);
+            if (onChange) onChange();
+          }}
+        />
+      )}
     </Card>
   );
 }
+
+import { SortDialog } from "./sort-dialog";

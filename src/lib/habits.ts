@@ -1,5 +1,4 @@
 // lib/habits.ts
-"use client";
 
 import { normalizeDate } from "./utils";
 import type { Habit, NewHabit, HabitProgress, FrequencyType, WeekdayType } from "@/types/habit";
@@ -26,6 +25,7 @@ interface RawHabitProgress {
 
 const HABITS_STORAGE_KEY = "habits";
 const ARCHIVED_HABITS_STORAGE_KEY = "archivedHabits";
+const HABIT_ORDER_STORAGE_KEY = "habitOrder"; // Новый ключ для порядка привычек
 
 export function getHabits(): Habit[] {
   if (typeof window === "undefined") return [];
@@ -34,8 +34,8 @@ export function getHabits(): Habit[] {
   if (!habitsJson) return [];
 
   try {
-    const habits = JSON.parse(habitsJson) as RawHabit[];
-    return habits.map((habit) => ({
+    const rawHabits = JSON.parse(habitsJson) as RawHabit[];
+    return rawHabits.map((habit) => ({
       id: habit.id,
       name: habit.name,
       description: habit.description,
@@ -50,11 +50,44 @@ export function getHabits(): Habit[] {
         completed: p.completed,
       })),
       categoryIds: habit.categoryIds || [],
-    }));
+    })).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); // Сортировка по умолчанию
   } catch (e) {
     console.error("Error parsing habits from localStorage", e);
     return [];
   }
+}
+
+export function saveHabits(habits: Habit[]): void {
+  if (typeof window === "undefined") return;
+  const rawHabits = habits.map((habit) => ({
+    id: habit.id,
+    name: habit.name,
+    description: habit.description,
+    frequency: habit.frequency,
+    specificDays: habit.specificDays,
+    icon: habit.icon,
+    goal: habit.goal,
+    createdAt: habit.createdAt.toISOString(),
+    progress: habit.progress.map((p) => ({
+      date: p.date.toISOString(),
+      value: p.value,
+      completed: p.completed,
+    })),
+    categoryIds: habit.categoryIds,
+  }));
+  localStorage.setItem(HABITS_STORAGE_KEY, JSON.stringify(rawHabits));
+}
+
+// Новая функция для сохранения порядка
+export function getHabitOrder(): string[] {
+  if (typeof window === "undefined") return [];
+  const orderJson = localStorage.getItem(HABIT_ORDER_STORAGE_KEY);
+  return orderJson ? JSON.parse(orderJson) : [];
+}
+
+export function saveHabitOrder(habitIds: string[]): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(HABIT_ORDER_STORAGE_KEY, JSON.stringify(habitIds));
 }
 
 export function getArchivedHabits(): Habit[] {
@@ -85,11 +118,6 @@ export function getArchivedHabits(): Habit[] {
     console.error("Error parsing archived habits from localStorage", e);
     return [];
   }
-}
-
-export function saveHabits(habits: Habit[]): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(HABITS_STORAGE_KEY, JSON.stringify(habits));
 }
 
 export function saveArchivedHabits(archivedHabits: Habit[]): void {

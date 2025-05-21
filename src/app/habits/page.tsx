@@ -7,7 +7,7 @@ import { Plus, ChevronLeft, ChevronRight, X, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ModeToggle } from "@/components/mode-toggle";
-import { getHabits, removeCategoryFromHabits } from "@/lib/habits";
+import { getHabits, removeCategoryFromHabits, getHabitOrder } from "@/lib/habits";
 import { getCategories, deleteCategory } from "@/lib/categories";
 import type { Habit } from "@/types/habit";
 import type { Category } from "@/types/category";
@@ -36,7 +36,6 @@ import {
 
 function CategoryIcon({ icon, isActive, activeColor }: { icon: string; isActive: boolean; activeColor?: string }) {
   const size = 16;
-
   const icons: Record<string, React.ReactNode> = {
     book: <Book size={size} />,
     bicycle: <Bike size={size} />,
@@ -58,7 +57,6 @@ function CategoryIcon({ icon, isActive, activeColor }: { icon: string; isActive:
     package: <Package size={size} />,
     fuel: <Fuel size={size} />,
   };
-
   return (
     <span style={isActive && activeColor ? { color: activeColor } : {}}>
       {icons[icon] || <Star size={size} />}
@@ -73,10 +71,32 @@ export default function HabitsPage() {
 
   const tabsListRef = useRef<HTMLDivElement>(null);
 
-  const loadData = () => {
-    setHabits(getHabits());
-    setCategories(getCategories());
-  };
+const loadData = () => {
+  const allHabits = getHabits();
+  console.log("allHabits:", allHabits); // Отладка
+  if (!Array.isArray(allHabits)) {
+    console.error("getHabits returned invalid data:", allHabits);
+    setHabits([]);
+    return;
+  }
+
+  const order = getHabitOrder();
+  console.log("order:", order); // Отладка
+  if (!Array.isArray(order)) {
+    console.error("getHabitOrder returned invalid data:", order);
+    setHabits(allHabits);
+    return;
+  }
+
+  const orderedHabits = order.length > 0
+    ? order.map((id) => allHabits.find((h) => h.id === id)).filter((h): h is Habit => Boolean(h))
+    : allHabits;
+  setHabits(orderedHabits);
+
+  const categories = getCategories();
+  console.log("categories:", categories); // Отладка
+  setCategories(categories);
+};
 
   useEffect(() => {
     loadData();
@@ -111,21 +131,20 @@ export default function HabitsPage() {
     }
   };
 
-  const [longPressTimeout, setLongPressTimeout] = useState<NodeJS.Timeout | null>(null);
+const longPressTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleLongPressStart = (categoryId: string) => {
-    const timeout = setTimeout(() => {
-      handleDeleteCategory(categoryId);
-    }, 1000); // 1 секунда для long press
-    setLongPressTimeout(timeout);
-  };
+const handleLongPressStart = (categoryId: string) => {
+  longPressTimeout.current = setTimeout(() => {
+    handleDeleteCategory(categoryId);
+  }, 1000);
+};
 
-  const handleLongPressEnd = () => {
-    if (longPressTimeout) {
-      clearTimeout(longPressTimeout);
-      setLongPressTimeout(null);
-    }
-  };
+const handleLongPressEnd = () => {
+  if (longPressTimeout.current) {
+    clearTimeout(longPressTimeout.current);
+    longPressTimeout.current = null;
+  }
+};
 
   const handleDeleteCategory = (categoryId: string) => {
     if (window.confirm(`Вы уверены, что хотите удалить категорию?`)) {
@@ -156,52 +175,57 @@ export default function HabitsPage() {
         </div>
       </div>
 
-      <div className="relative">
-        <Tabs
-          defaultValue="all"
-          value={selectedCategory || "all"}
-          onValueChange={(value) => setSelectedCategory(value === "all" ? null : value)}
-        >
-          <TabsList
-            ref={tabsListRef}
-            className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-hide"
-          >
-            <TabsTrigger
-              value="all"
-              className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:text-foreground whitespace-nowrap"
-            >
-              Все
-            </TabsTrigger>
-            <TabsTrigger
-              value="no-category"
-              className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:text-foreground whitespace-nowrap"
-            >
-              Без категории
-            </TabsTrigger>
-            {categories.map((category) => {
-              const isActive = selectedCategory === category.id;
-              return (
-                <div key={category.id} className="relative flex items-center">
-                  <TabsTrigger
-                    value={category.id}
-                    className="flex items-center gap-2 text-white data-[state=active]:bg-background whitespace-nowrap pr-6"
-                    style={isActive ? { backgroundColor: "#fff" } : { backgroundColor: category.color }}
-                    onMouseDown={() => handleLongPressStart(category.id)}
-                    onMouseUp={handleLongPressEnd}
-                    onTouchStart={() => handleLongPressStart(category.id)}
-                    onTouchEnd={handleLongPressEnd}
-                  >
-                    <CategoryIcon icon={category.icon} isActive={isActive} activeColor={category.color} />
-                    <span style={isActive ? { color: category.color } : {}}>
-                      {category.name}
-                    </span>
-                  </TabsTrigger>
-                </div>
-              );
-            })}
-          </TabsList>
-        </Tabs>
-      </div>
+<div className="relative">
+  <Tabs
+    defaultValue="all"
+    value={selectedCategory || "all"}
+    onValueChange={(value) => setSelectedCategory(value === "all" ? null : value)}
+  >
+    <div className="flex gap-2 mb-4">
+      <Button
+        variant={selectedCategory === null ? "secondary" : "ghost"}
+        onClick={() => setSelectedCategory(null)}
+      >
+        Все
+      </Button>
+      <Button
+        variant={selectedCategory === "no-category" ? "secondary" : "ghost"}
+        onClick={() => setSelectedCategory("no-category")}
+      >
+        Без категории
+      </Button>
+    </div>
+
+    {categories.length > 0 && (
+      <TabsList
+        ref={tabsListRef}
+        className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-hide justify-start"
+      >
+        {categories.map((category) => {
+          const isActive = selectedCategory === category.id;
+          return (
+            <div key={category.id} className="relative flex items-center">
+              <TabsTrigger
+                value={category.id}
+                className="flex items-center gap-2 text-white data-[state=active]:bg-background whitespace-nowrap pr-6"
+                style={isActive ? { backgroundColor: "#fff" } : { backgroundColor: category.color }}
+                onMouseDown={() => handleLongPressStart(category.id)}
+                onMouseUp={handleLongPressEnd}
+                onTouchStart={() => handleLongPressStart(category.id)}
+                onTouchEnd={handleLongPressEnd}
+              >
+                <CategoryIcon icon={category.icon} isActive={isActive} activeColor={category.color} />
+                <span style={isActive ? { color: category.color } : {}}>
+                  {category.name}
+                </span>
+              </TabsTrigger>
+            </div>
+          );
+        })}
+      </TabsList>
+    )}
+  </Tabs>
+</div>
 
       {filteredHabits.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
@@ -215,7 +239,12 @@ export default function HabitsPage() {
       ) : (
         <div className="grid gap-4">
           {filteredHabits.map((habit) => (
-            <HabitCard key={habit.id} habit={habit} onChange={loadData} />
+            <HabitCard
+              key={habit.id}
+              habit={habit}
+              onChange={loadData}
+              habitsList={filteredHabits} // Передаём список привычек
+            />
           ))}
         </div>
       )}
