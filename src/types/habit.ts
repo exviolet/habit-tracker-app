@@ -15,6 +15,7 @@ export interface Habit {
   goal: number;
   createdAt: Date;
   progress: HabitProgress[];
+  categoryIds: string[];
 }
 
 // Интерфейс для прогресса привычки
@@ -25,4 +26,4 @@ export interface HabitProgress {
 }
 
 // Тип для создания новой привычки (без id, createdAt и progress)
-export type NewHabit = Omit<Habit, 'id' | 'createdAt' | 'progress'>;
+export type NewHabit = Omit<Habit, 'id' | 'createdAt' | 'progress'> & { categoryIds: string[] };

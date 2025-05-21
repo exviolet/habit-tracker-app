@@ -67,3 +67,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none; /* Для Internet Explorer и Edge */
+  scrollbar-width: none; /* Для Firefox */
+}

@@ -1,3 +1,4 @@
+// lib/habits.ts
 "use client";
 
 import { normalizeDate } from "./utils";
@@ -14,6 +15,7 @@ interface RawHabit {
   goal: number;
   createdAt: string;
   progress: RawHabitProgress[];
+  categoryIds?: string[];
 }
 
 interface RawHabitProgress {
@@ -22,10 +24,8 @@ interface RawHabitProgress {
   completed: boolean;
 }
 
-// Ключ для хранения привычек в localStorage
 const HABITS_STORAGE_KEY = "habits";
 
-// Функция для получения всех привычек
 export function getHabits(): Habit[] {
   if (typeof window === "undefined") return [];
 
@@ -46,8 +46,9 @@ export function getHabits(): Habit[] {
       progress: habit.progress.map((p) => ({
         date: new Date(p.date),
         value: p.value,
-        completed: p.completed
-      }))
+        completed: p.completed,
+      })),
+      categoryIds: habit.categoryIds || [],
     }));
   } catch (e) {
     console.error("Error parsing habits from localStorage", e);
@@ -55,54 +56,62 @@ export function getHabits(): Habit[] {
   }
 }
 
-// Функция для сохранения всех привычек
 export function saveHabits(habits: Habit[]): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(HABITS_STORAGE_KEY, JSON.stringify(habits));
 }
 
-// Функция для получения привычки по ID
-export function getHabitById(id: string): Habit | undefined {
+// Новая функция для удаления categoryId из всех привычек
+export function removeCategoryFromHabits(categoryId: string): void {
   const habits = getHabits();
-  return habits.find(habit => habit.id === id);
+  const updatedHabits = habits.map((habit) => ({
+    ...habit,
+    categoryIds: habit.categoryIds?.filter((id) => id !== categoryId) || [],
+  }));
+  saveHabits(updatedHabits);
 }
 
-// Функция для создания новой привычки
+export function getHabitById(id: string): Habit | undefined {
+  const habits = getHabits();
+  return habits.find((habit) => habit.id === id);
+}
+
 export function createHabit(newHabit: NewHabit): Habit {
   const habits = getHabits();
 
   const habit: Habit = {
     ...newHabit,
-    id: Math.random().toString(36).substring(2, 9),
+    id: crypto.randomUUID(),
     createdAt: new Date(),
-    progress: []
+    progress: [],
+    categoryIds: newHabit.categoryIds || [],
   };
 
-  saveHabits([...habits, habit]);
+  const updatedHabits = [...habits, habit];
+  saveHabits(updatedHabits);
   return habit;
 }
 
-// Функция для обновления привычки
 export function updateHabit(id: string, updatedHabit: Partial<Habit>): Habit | undefined {
   const habits = getHabits();
-  const habitIndex = habits.findIndex(habit => habit.id === id);
+  const habitIndex = habits.findIndex((habit) => habit.id === id);
 
   if (habitIndex === -1) return undefined;
 
   const updatedHabits = [...habits];
   updatedHabits[habitIndex] = {
     ...updatedHabits[habitIndex],
-    ...updatedHabit
+    ...updatedHabit,
+    categoryIds: updatedHabit.categoryIds || updatedHabits[habitIndex].categoryIds || [],
   };
 
   saveHabits(updatedHabits);
   return updatedHabits[habitIndex];
 }
 
-// Функция для удаления привычки
 export function deleteHabit(id: string): boolean {
   const habits = getHabits();
-  const filteredHabits = habits.filter(habit => habit.id !== id);
+  const filteredHabits = habits.filter((habit) => habit.id !== id);
 
   if (filteredHabits.length === habits.length) return false;
 
@@ -110,42 +119,38 @@ export function deleteHabit(id: string): boolean {
   return true;
 }
 
-// Функция для обновления прогресса привычки
 export function updateHabitProgress(
   habitId: string,
   date: Date,
   value: number
 ): Habit | undefined {
   const habits = getHabits();
-  const habitIndex = habits.findIndex(habit => habit.id === habitId);
+  const habitIndex = habits.findIndex((habit) => habit.id === habitId);
 
   if (habitIndex === -1) return undefined;
 
   const habit = habits[habitIndex];
 
-  // Проверяем, есть ли уже запись за этот день
   const normalizedDate = normalizeDate(date);
   const progressIndex = habit.progress.findIndex(
-    p => normalizeDate(p.date).getTime() === normalizedDate.getTime()
+    (p) => normalizeDate(p.date).getTime() === normalizedDate.getTime()
   );
 
   const updatedHabits = [...habits];
 
   if (progressIndex > -1) {
-    // Обновляем существующую запись
     const updatedProgress = [...habit.progress];
     updatedProgress[progressIndex] = {
       date: normalizedDate,
       value,
-      completed: value >= habit.goal
+      completed: value >= habit.goal,
     };
 
     updatedHabits[habitIndex] = {
       ...habit,
-      progress: updatedProgress
+      progress: updatedProgress,
     };
   } else {
-    // Создаем новую запись
     updatedHabits[habitIndex] = {
       ...habit,
       progress: [
@@ -153,9 +158,9 @@ export function updateHabitProgress(
         {
           date: normalizedDate,
           value,
-          completed: value >= habit.goal
-        }
-      ]
+          completed: value >= habit.goal,
+        },
+      ],
     };
   }
 
@@ -163,22 +168,37 @@ export function updateHabitProgress(
   return updatedHabits[habitIndex];
 }
 
-// Функция для получения прогресса за определенный день
 export function getProgressForDate(habitId: string, date: Date): HabitProgress | undefined {
   const habit = getHabitById(habitId);
   if (!habit) return undefined;
 
   const normalizedTarget = normalizeDate(date).getTime();
   return habit.progress.find(
-    p => normalizeDate(p.date).getTime() === normalizedTarget
+    (p) => normalizeDate(p.date).getTime() === normalizedTarget
   );
 }
 
-// Функция для получения всех иконок привычек
 export function getHabitIcons(): string[] {
   return [
-    "walking", "bicycle", "clock", "book", "pencil", "droplets", "cake",
-    "check", "smile", "user", "coffee", "shopping-cart", "ticket", "music",
-    "wrench", "umbrella", "star", "train", "package", "fuel"
+    "walking",
+    "bicycle",
+    "clock",
+    "book",
+    "pencil",
+    "droplets",
+    "cake",
+    "check",
+    "smile",
+    "user",
+    "coffee",
+    "shopping-cart",
+    "ticket",
+    "music",
+    "wrench",
+    "umbrella",
+    "star",
+    "train",
+    "package",
+    "fuel",
   ];
 }

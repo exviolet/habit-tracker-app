@@ -1,3 +1,4 @@
+// components/habits/habit-card.tsx
 "use client";
 
 import { useState } from "react";
@@ -50,16 +51,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Progress } from "@/components/ui/progress";
 import type { Habit } from "@/types/habit";
+import { getCategories } from "@/lib/categories";
 import { deleteHabit, updateHabitProgress, getProgressForDate } from "@/lib/habits";
 
-// Компонент для отображения иконки привычки
 function HabitIcon({ icon }: { icon: string }) {
   const size = 24;
-
   const icons: Record<string, React.ReactNode> = {
     book: <Book size={size} />,
     bicycle: <Bike size={size} />,
@@ -81,7 +80,6 @@ function HabitIcon({ icon }: { icon: string }) {
     package: <Package size={size} />,
     fuel: <Fuel size={size} />,
   };
-
   return icons[icon] || <Star size={size} />;
 }
 
@@ -89,13 +87,15 @@ interface HabitCardProps {
   habit: Habit;
 }
 
+// components/habits/habit-card.tsx
 export function HabitCard({ habit }: HabitCardProps) {
   const [localHabit, setLocalHabit] = useState(habit);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const categories = getCategories();
+  const habitCategories = categories.filter((cat) => habit.categoryIds?.includes(cat.id));
 
   const today = new Date();
   const todayProgress = getProgressForDate(habit.id, today) || { value: 0, completed: false, date: today };
-
   const progressPercentage = Math.min(Math.round((todayProgress.value / habit.goal) * 100), 100);
 
   const handleDelete = () => {
@@ -119,12 +119,12 @@ export function HabitCard({ habit }: HabitCardProps) {
   };
 
   const handleDecrement = () => {
-  const newValue = Math.max(0, todayProgress.value - 1);
-  const updatedHabit = updateHabitProgress(habit.id, new Date(), newValue);
-  if (updatedHabit) {
-    setLocalHabit(updatedHabit);
-  }
-};
+    const newValue = Math.max(0, todayProgress.value - 1);
+    const updatedHabit = updateHabitProgress(habit.id, new Date(), newValue);
+    if (updatedHabit) {
+      setLocalHabit(updatedHabit);
+    }
+  };
 
   return (
     <Card className="relative">
@@ -136,7 +136,6 @@ export function HabitCard({ habit }: HabitCardProps) {
             </div>
             <CardTitle className="text-lg">{habit.name}</CardTitle>
           </div>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -147,7 +146,7 @@ export function HabitCard({ habit }: HabitCardProps) {
               <DropdownMenuItem asChild>
                 <Link href={`/edit-habit/${habit.id}`}>
                   <Edit className="mr-2 h-4 w-4" />
-                  <span>Өңдеу</span>
+                  <span>Редактировать</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -155,7 +154,7 @@ export function HabitCard({ habit }: HabitCardProps) {
                 onClick={() => setShowConfirmDelete(true)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                <span>Жою</span>
+                <span>Удалить</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -166,14 +165,25 @@ export function HabitCard({ habit }: HabitCardProps) {
         {habit.description && (
           <p className="text-sm text-muted-foreground mb-2">{habit.description}</p>
         )}
-
+        {habitCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {habitCategories.map((category) => (
+              <span
+                key={category.id}
+                className="text-xs px-2 py-1 rounded-md"
+                style={{ backgroundColor: category.color, color: "#fff" }}
+              >
+                {category.name}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-2 mb-1">
           <p className="text-sm font-medium">Прогресс:</p>
           <p className="text-sm">
             {todayProgress.value} / {habit.goal}
           </p>
         </div>
-
         <Progress value={progressPercentage} className="h-2" />
       </CardContent>
 
@@ -188,16 +198,10 @@ export function HabitCard({ habit }: HabitCardProps) {
             >
               -1
             </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleIncrement}
-            >
+            <Button variant="outline" size="sm" onClick={handleIncrement}>
               +1
             </Button>
           </div>
-
           <Button
             variant={todayProgress.completed ? "secondary" : "default"}
             size="sm"
@@ -207,10 +211,10 @@ export function HabitCard({ habit }: HabitCardProps) {
             {todayProgress.completed ? (
               <>
                 <Check className="mr-1 h-4 w-4" />
-                Орындалды
+                Выполнено
               </>
             ) : (
-              "Орындалуын белгілеу"
+              "Отметить выполнение"
             )}
           </Button>
         </div>
@@ -219,19 +223,19 @@ export function HabitCard({ habit }: HabitCardProps) {
       <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Сіз бұл әдетті жоюға сенімдісіз бе?</AlertDialogTitle>
+            <AlertDialogTitle>Вы уверены, что хотите удалить эту привычку?</AlertDialogTitle>
             <AlertDialogDescription>
-              Бұл әрекет "{habit.name}" әдетін және оны орындаудың бүкіл тарихын жояды.
-              Бұл әрекетті жою мүмкін емес.
+              Это действие удалит привычку "{habit.name}" и всю историю её выполнения.
+              Это действие нельзя отменить.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Болдырмау</AlertDialogCancel>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Жою
+              Удалить
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
