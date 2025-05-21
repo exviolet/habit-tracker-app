@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   Check,
   Edit,
-  Trash2,
+  Archive,
   MoreVertical,
   Book,
   Bike,
@@ -26,20 +26,20 @@ import {
   Star,
   Train,
   Package,
-  Fuel
+  Fuel,
 } from "lucide-react";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,9 +55,9 @@ import {
 import { Progress } from "@/components/ui/progress";
 import type { Habit } from "@/types/habit";
 import { getCategories } from "@/lib/categories";
-import { deleteHabit, updateHabitProgress, getProgressForDate } from "@/lib/habits";
+import { archiveHabit, updateHabitProgress, getProgressForDate } from "@/lib/habits";
 
-function HabitIcon({ icon }: { icon: string }) {
+export function HabitIcon({ icon }: { icon: string }) {
   const size = 24;
   const icons: Record<string, React.ReactNode> = {
     book: <Book size={size} />,
@@ -80,17 +80,47 @@ function HabitIcon({ icon }: { icon: string }) {
     package: <Package size={size} />,
     fuel: <Fuel size={size} />,
   };
-  return icons[icon] || <Star size={size} />;
+
+  // Если icon — это emoji, преобразуем его в ключ
+  const iconMap: Record<string, string> = {
+    "📚": "book",
+    "🚲": "bicycle",
+    "⏰": "clock",
+    "✏️": "pencil",
+    "💧": "droplets",
+    "🍰": "cake",
+    "✅": "check",
+    "😊": "smile",
+    "👤": "user",
+    "☕": "coffee",
+    "🛒": "shopping-cart",
+    "🎟️": "ticket",
+    "🎵": "music",
+    "🔧": "wrench",
+    "☔": "umbrella",
+    "⭐": "star",
+    "🚆": "train",
+    "📦": "package",
+    "⛽": "fuel",
+  };
+
+  const iconKey = iconMap[icon] || icon;
+  const selectedIcon = icons[iconKey] || <Star size={size} />;
+
+  // Отладочная информация
+  console.log(`HabitIcon: icon=${icon}, mapped to=${iconKey}, selectedIcon exists=${!!selectedIcon}`);
+
+  return selectedIcon;
 }
 
 interface HabitCardProps {
   habit: Habit;
+  onChange?: () => void;
 }
 
-// components/habits/habit-card.tsx
-export function HabitCard({ habit }: HabitCardProps) {
+export function HabitCard({ habit, onChange }: HabitCardProps) {
   const [localHabit, setLocalHabit] = useState(habit);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showConfirmArchive, setShowConfirmArchive] = useState(false);
   const categories = getCategories();
   const habitCategories = categories.filter((cat) => habit.categoryIds?.includes(cat.id));
 
@@ -98,9 +128,9 @@ export function HabitCard({ habit }: HabitCardProps) {
   const todayProgress = getProgressForDate(habit.id, today) || { value: 0, completed: false, date: today };
   const progressPercentage = Math.min(Math.round((todayProgress.value / habit.goal) * 100), 100);
 
-  const handleDelete = () => {
-    deleteHabit(habit.id);
-    window.location.reload();
+  const handleArchive = () => {
+    archiveHabit(habit.id);
+    if (onChange) onChange();
   };
 
   const handleComplete = () => {
@@ -151,10 +181,10 @@ export function HabitCard({ habit }: HabitCardProps) {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
-                onClick={() => setShowConfirmDelete(true)}
+                onClick={() => setShowConfirmArchive(true)}
               >
-                <Trash2 className="mr-2 h-4 w-4" />
-                <span>Удалить</span>
+                <Archive className="mr-2 h-4 w-4" />
+                <span>Архив</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -220,22 +250,21 @@ export function HabitCard({ habit }: HabitCardProps) {
         </div>
       </CardFooter>
 
-      <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
+      <AlertDialog open={showConfirmArchive} onOpenChange={setShowConfirmArchive}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Вы уверены, что хотите удалить эту привычку?</AlertDialogTitle>
+            <AlertDialogTitle>Вы хотите отправить привычку в архив?</AlertDialogTitle>
             <AlertDialogDescription>
-              Это действие удалит привычку "{habit.name}" и всю историю её выполнения.
-              Это действие нельзя отменить.
+              Привычка "{habit.name}" будет перемещена в архив. Вы сможете восстановить её или удалить навсегда в разделе настроек.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Отмена</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={handleArchive}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Удалить
+              Архив
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

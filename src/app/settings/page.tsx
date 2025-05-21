@@ -1,8 +1,9 @@
+// app/settings/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Globe } from "lucide-react";
+import { Moon, Sun, Globe, Archive } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 // Пока что имитация языков
 const languages = [
@@ -26,7 +28,6 @@ export default function SettingsPage() {
   const [mounted, setMounted] = useState(false);
   const [language, setLanguage] = useState("ru");
 
-  // Предотвращаем несоответствие рендеринга между сервером и клиентом
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -47,8 +48,10 @@ export default function SettingsPage() {
   };
 
   const clearAllData = () => {
-    if (typeof window !== "undefined" &&
-        window.confirm("Вы уверены, что хотите удалить все данные приложения? Это действие нельзя отменить.")) {
+    if (
+      typeof window !== "undefined" &&
+      window.confirm("Вы уверены, что хотите удалить все данные приложения? Это действие нельзя отменить.")
+    ) {
       localStorage.clear();
       window.location.href = "/";
     }
@@ -103,14 +106,24 @@ export default function SettingsPage() {
 
       <Card>
         <CardHeader>
+          <CardTitle className="text-lg">Архив</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Link href="/settings/archived-habits">
+            <Button variant="outline" className="w-full">
+              <Archive className="mr-2 h-5 w-5" />
+              Архив привычек
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle className="text-lg text-destructive">Қауіпті аймақ</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={clearAllData}
-          >
+          <Button variant="destructive" className="w-full" onClick={clearAllData}>
             Барлық деректерді жою
           </Button>
           <p className="text-xs text-muted-foreground mt-2">

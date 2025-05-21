@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Plus, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, X, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -111,33 +111,28 @@ export default function HabitsPage() {
     }
   };
 
-const [longPressTimeout, setLongPressTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [longPressTimeout, setLongPressTimeout] = useState<NodeJS.Timeout | null>(null);
 
-const handleLongPressStart = (categoryId: string) => {
-  const timeout = setTimeout(() => {
-    handleDeleteCategory(categoryId);
-  }, 1000); // 1 секунда для long press
-  setLongPressTimeout(timeout);
-};
+  const handleLongPressStart = (categoryId: string) => {
+    const timeout = setTimeout(() => {
+      handleDeleteCategory(categoryId);
+    }, 1000); // 1 секунда для long press
+    setLongPressTimeout(timeout);
+  };
 
-const handleLongPressEnd = () => {
-  if (longPressTimeout) {
-    clearTimeout(longPressTimeout);
-    setLongPressTimeout(null);
-  }
-};
+  const handleLongPressEnd = () => {
+    if (longPressTimeout) {
+      clearTimeout(longPressTimeout);
+      setLongPressTimeout(null);
+    }
+  };
 
-  // Функция для удаления категории
   const handleDeleteCategory = (categoryId: string) => {
     if (window.confirm(`Вы уверены, что хотите удалить категорию?`)) {
-      // Удаляем категорию
       const success = deleteCategory(categoryId);
       if (success) {
-        // Удаляем categoryId из привычек
         removeCategoryFromHabits(categoryId);
-        // Обновляем состояние
         loadData();
-        // Если текущая выбранная категория удалена, сбрасываем выбор
         if (selectedCategory === categoryId) {
           setSelectedCategory(null);
         }
@@ -220,7 +215,7 @@ const handleLongPressEnd = () => {
       ) : (
         <div className="grid gap-4">
           {filteredHabits.map((habit) => (
-            <HabitCard key={habit.id} habit={habit} />
+            <HabitCard key={habit.id} habit={habit} onChange={loadData} />
           ))}
         </div>
       )}
