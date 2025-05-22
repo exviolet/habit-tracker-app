@@ -3,6 +3,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Добавляем компонент Image
+import { useTheme } from "next-themes"; // Импортируем useTheme
 import { Plus, ChevronLeft, ChevronRight, X, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +35,9 @@ import {
   Package,
   Fuel,
 } from "lucide-react";
+
+import LogoLight from "@/assets/white-log.svg";
+import LogoDark from "@/assets/dark-logo.svg";
 
 function CategoryIcon({ icon, isActive, activeColor }: { icon: string; isActive: boolean; activeColor?: string }) {
   const size = 16;
@@ -68,6 +73,7 @@ export default function HabitsPage() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { theme } = useTheme(); 
 
   const tabsListRef = useRef<HTMLDivElement>(null);
 
@@ -161,9 +167,17 @@ const handleLongPressEnd = () => {
     }
   };
 
+// Выбираем логотип в зависимости от темы
+  const logoSrc = theme === "dark" ? "/habit-logo-black-accent-detailing.png" : "/habit-logo-white-accent-detailing.png";
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
+        {theme === "dark" ? (
+            <LogoDark className="w-12 h-12" /> // Укажи свои размеры
+          ) : (
+            <LogoLight className="w-12 h-12" /> // Укажи свои размеры
+          )}
         <h1 className="text-2xl font-bold">Привычки</h1>
         <div className="flex items-center gap-2">
           <ModeToggle />
