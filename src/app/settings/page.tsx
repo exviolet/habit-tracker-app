@@ -19,14 +19,14 @@ import Link from "next/link";
 
 // Пока что имитация языков
 const languages = [
-  { value: "ru", label: "Русский" },
   { value: "kk", label: "Қазақша" },
+  { value: "ru", label: "Русский" },
 ];
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [language, setLanguage] = useState("ru");
+  const [language, setLanguage] = useState("kk");
 
   useEffect(() => {
     setMounted(true);
@@ -50,7 +50,7 @@ export default function SettingsPage() {
   const clearAllData = () => {
     if (
       typeof window !== "undefined" &&
-      window.confirm("Вы уверены, что хотите удалить все данные приложения? Это действие нельзя отменить.")
+      window.confirm("Қолданбаның барлық деректерін жойғыңыз келетініне сенімдісіз бе? Бұл әрекетті қайтару мүмкін емес!")
     ) {
       localStorage.clear();
       window.location.href = "/";
@@ -69,7 +69,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isDark ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-              <Label htmlFor="theme-toggle">Түнгі тема</Label>
+              <Label htmlFor="theme-toggle">Қараңғы</Label>
             </div>
             <Switch
               id="theme-toggle"
@@ -91,7 +91,7 @@ export default function SettingsPage() {
           </div>
           <Select value={language} onValueChange={handleLanguageChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Выберите язык" />
+              <SelectValue placeholder="Тілді таңдаңыз" />
             </SelectTrigger>
             <SelectContent>
               {languages.map((lang) => (
@@ -106,13 +106,13 @@ export default function SettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Архив</CardTitle>
+          <CardTitle className="text-lg">Мұрағат</CardTitle>
         </CardHeader>
         <CardContent>
           <Link href="/settings/archived-habits">
             <Button variant="outline" className="w-full">
               <Archive className="mr-2 h-5 w-5" />
-              Архив привычек
+              Әдеттер мұрағаты
             </Button>
           </Link>
         </CardContent>
@@ -127,7 +127,7 @@ export default function SettingsPage() {
             Барлық деректерді жою
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Бұл әрекет сіздің барлық әдеттеріңізді және прогресс тарихын жояды. Бұл әрекетті жою мүмкін емес.
+            Бұл әрекет сіздің барлық әдеттеріңізді және прогресс тарихын жояды. Бұл әрекетті қайтару мүмкін емес!
           </p>
         </CardContent>
       </Card>

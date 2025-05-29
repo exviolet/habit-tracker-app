@@ -79,7 +79,7 @@ export default function HabitsPage() {
 
 const loadData = () => {
   const allHabits = getHabits();
-  console.log("allHabits:", allHabits); // Отладка
+  // console.log("allHabits:", allHabits); // Отладка
   if (!Array.isArray(allHabits)) {
     console.error("getHabits returned invalid data:", allHabits);
     setHabits([]);
@@ -87,7 +87,7 @@ const loadData = () => {
   }
 
   const order = getHabitOrder();
-  console.log("order:", order); // Отладка
+  // console.log("order:", order); // Отладка
   if (!Array.isArray(order)) {
     console.error("getHabitOrder returned invalid data:", order);
     setHabits(allHabits);
@@ -100,7 +100,7 @@ const loadData = () => {
   setHabits(orderedHabits);
 
   const categories = getCategories();
-  console.log("categories:", categories); // Отладка
+  // console.log("categories:", categories); // Отладка
   setCategories(categories);
 };
 
@@ -153,7 +153,7 @@ const handleLongPressEnd = () => {
 };
 
   const handleDeleteCategory = (categoryId: string) => {
-    if (window.confirm(`Вы уверены, что хотите удалить категорию?`)) {
+    if (window.confirm(`Сіз санатты жойғыңыз келетініне сенімдісіз бе?`)) {
       const success = deleteCategory(categoryId);
       if (success) {
         removeCategoryFromHabits(categoryId);
@@ -162,7 +162,7 @@ const handleLongPressEnd = () => {
           setSelectedCategory(null);
         }
       } else {
-        alert("Не удалось удалить категорию.");
+        alert("Санатты жою мүмкін болмады");
       }
     }
   };
@@ -178,7 +178,7 @@ const handleLongPressEnd = () => {
           ) : (
             <LogoLight className="w-12 h-12" /> // Укажи свои размеры
           )}
-        <h1 className="text-2xl font-bold">Привычки</h1>
+        <h1 className="text-2xl font-bold">Әдеттер</h1>
         <div className="flex items-center gap-2">
           <ModeToggle />
           <Link href="/add-habit">
@@ -200,13 +200,13 @@ const handleLongPressEnd = () => {
         variant={selectedCategory === null ? "secondary" : "ghost"}
         onClick={() => setSelectedCategory(null)}
       >
-        Все
+        Барлығы
       </Button>
       <Button
         variant={selectedCategory === "no-category" ? "secondary" : "ghost"}
         onClick={() => setSelectedCategory("no-category")}
       >
-        Без категории
+        Санатсыз
       </Button>
     </div>
 
@@ -244,10 +244,10 @@ const handleLongPressEnd = () => {
       {filteredHabits.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
           <p className="text-muted-foreground text-center">
-            У вас пока нет привычек. Нажмите на кнопку "+", чтобы добавить первую привычку.
+          Сізде әлі әдеттеріңіз жоқ. Алғашқы әдетіңізді қосу үшін «+» батырмасын басыңыз
           </p>
           <Link href="/add-habit">
-            <Button>Добавить привычку</Button>
+            <Button>Әдет қосу</Button>
           </Link>
         </div>
       ) : (

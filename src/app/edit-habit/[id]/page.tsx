@@ -59,7 +59,7 @@ export default function EditHabitPage({
     e.preventDefault();
 
     if (!formData.name || !formData.frequency || !formData.icon || !formData.goal) {
-      alert("Пожалуйста, заполните все обязательные поля");
+      alert("Барлық қажетті өрістерді толтырыңыз!");
       return;
     }
 
@@ -108,12 +108,12 @@ export default function EditHabitPage({
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold">Привычка не найдена</h1>
+          <h1 className="text-2xl font-bold">Әдет табылмады</h1>
         </div>
         <Card>
           <CardContent className="p-6">
             <p className="text-center text-muted-foreground">
-              Привычка с указанным ID не найдена. Возможно, она была удалена.
+              Көрсетілген идентификаторы бар әдет табылмады. Ол жойылған болуы мүмкін
             </p>
           </CardContent>
           <CardFooter>
@@ -121,7 +121,7 @@ export default function EditHabitPage({
               className="w-full"
               onClick={() => router.push("/habits")}
             >
-              Вернуться к списку привычек
+              Әдеттер тізіміне оралу
             </Button>
           </CardFooter>
         </Card>
@@ -132,7 +132,7 @@ export default function EditHabitPage({
   if (!habit) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p>Загрузка...</p>
+        <p>Жүктелуде...</p>
       </div>
     );
   }
@@ -200,7 +200,7 @@ export default function EditHabitPage({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="goal">Мақсаты (саны) *</Label>
+              <Label htmlFor="goal">Күніне орындалуы *</Label>
               <Input
                 id="goal"
                 name="goal"

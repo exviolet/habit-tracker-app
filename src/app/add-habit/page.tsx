@@ -57,7 +57,7 @@ export default function AddHabitPage() {
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
   if (!formData.name || !formData.frequency || !formData.icon || !formData.goal) {
-    alert("Пожалуйста, заполните все обязательные поля");
+    alert("Барлық қажетті өрістерді толтырыңыз");
     return;
   }
   createHabit(formData as NewHabit);
@@ -106,7 +106,7 @@ const handleSubmit = (e: React.FormEvent) => {
   const handleCreateCategory = () => {
     const createdCategory = createCategory(newCategory);
     if (!createdCategory) {
-      alert("Достигнут лимит категорий (максимум 10)");
+      alert("Санаттар шегіне жетті (максималды 10)");
       return;
     }
     setCategories([...categories, createdCategory]);
@@ -124,41 +124,41 @@ const handleSubmit = (e: React.FormEvent) => {
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">Новая привычка</h1>
+        <h1 className="text-2xl font-bold">Жаңа әдет</h1>
       </div>
 
       <Card>
         <form onSubmit={handleSubmit}>
           <CardHeader>
-            <CardTitle>Создать привычку</CardTitle>
+            <CardTitle>Әдетті жасау</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Название *</Label>
+              <Label htmlFor="name">Аты *</Label>
               <Input
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Например: читать книгу"
+                placeholder="Мысалы: Кітап оқу"
                 required
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="description">Описание</Label>
+              <Label htmlFor="description">Сипаттамасы</Label>
               <Textarea
                 id="description"
                 name="description"
                 value={formData.description || ""}
                 onChange={handleChange}
-                placeholder="Дополнительное описание привычки"
+                placeholder="Әдеттің қосымша сипаттамасы"
                 rows={3}
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="frequency">Частота *</Label>
+              <Label htmlFor="frequency">Жиілгі *</Label>
               <Select
                 defaultValue={formData.frequency}
                 onValueChange={(value) =>
@@ -166,18 +166,18 @@ const handleSubmit = (e: React.FormEvent) => {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Выберите частоту" />
+                  <SelectValue placeholder="Жиілігін таңдаңыз" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="daily">Ежедневно</SelectItem>
-                  <SelectItem value="weekly">Еженедельно</SelectItem>
-                  <SelectItem value="specificDays">По дням недели</SelectItem>
+                  <SelectItem value="daily">Күнделікті</SelectItem>
+                  <SelectItem value="weekly">Апта сайын</SelectItem>
+                  <SelectItem value="specificDays">Апта күндері бойынша</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="goal">Цель (количество) *</Label>
+              <Label htmlFor="goal">Күніне орындалуы *</Label>
               <Input
                 id="goal"
                 name="goal"
@@ -190,7 +190,7 @@ const handleSubmit = (e: React.FormEvent) => {
             </div>
 
             <div className="grid gap-2">
-              <Label>Иконка *</Label>
+              <Label>Белгіше *</Label>
               <IconSelector
                 selectedIcon={formData.icon || "star"}
                 onSelectIcon={(icon) => handleSelectChange("icon", icon)}
@@ -198,7 +198,7 @@ const handleSubmit = (e: React.FormEvent) => {
             </div>
 
             <div className="grid gap-2">
-              <Label>Категории</Label>
+              <Label>Санаттар</Label>
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
                   <Button
@@ -219,14 +219,14 @@ const handleSubmit = (e: React.FormEvent) => {
                   onClick={() => setShowCreateCategory(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Создать категорию
+                  Санататты жасау
                 </Button>
               </div>
             </div>
           </CardContent>
           <CardFooter>
             <Button className="w-full" type="submit">
-              Сохранить
+            Сақтау
             </Button>
           </CardFooter>
         </form>
@@ -235,23 +235,23 @@ const handleSubmit = (e: React.FormEvent) => {
       <Dialog open={showCreateCategory} onOpenChange={setShowCreateCategory}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Создать новую категорию</DialogTitle>
+            <DialogTitle>Жаңа санатты жасау</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="categoryName">Название категории *</Label>
+              <Label htmlFor="categoryName">Санат атауы *</Label>
               <Input
                 id="categoryName"
                 value={newCategory.name}
                 onChange={(e) =>
                   setNewCategory((prev) => ({ ...prev, name: e.target.value }))
                 }
-                placeholder="Например: Здоровье"
+                placeholder="Мысалы: Денсаулық"
                 required
               />
             </div>
             <div className="grid gap-2">
-              <Label>Иконка *</Label>
+              <Label>Белгіше *</Label>
               <IconSelector
                 selectedIcon={newCategory.icon}
                 onSelectIcon={(icon) =>
@@ -260,7 +260,7 @@ const handleSubmit = (e: React.FormEvent) => {
               />
             </div>
             <div className="grid gap-2">
-              <Label>Цвет *</Label>
+              <Label>Түс *</Label>
               <div className="grid grid-cols-5 gap-2">
                 {colors.map((color) => (
                   <div
@@ -279,10 +279,10 @@ const handleSubmit = (e: React.FormEvent) => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateCategory(false)}>
-              Отмена
+              Болдырмау
             </Button>
             <Button onClick={handleCreateCategory} disabled={!newCategory.name}>
-              Создать
+              Жасау
             </Button>
           </DialogFooter>
         </DialogContent>

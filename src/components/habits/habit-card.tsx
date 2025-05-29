@@ -177,19 +177,19 @@ export function HabitCard({ habit, onChange, habitsList = [] }: HabitCardProps) 
               <DropdownMenuItem asChild>
                 <Link href={`/edit-habit/${habit.id}`}>
                   <Edit className="mr-2 h-4 w-4" />
-                  <span>Редактировать</span>
+                  <span>Өңдеу</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSort}>
                 <SortAsc className="mr-2 h-4 w-4" />
-                <span>Отсортировать привычки</span>
+                <span>Әдеттерді сұрыптау</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
                 onClick={() => setShowConfirmArchive(true)}
               >
                 <Archive className="mr-2 h-4 w-4" />
-                <span>Архив</span>
+                <span>Мұрағат</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -246,10 +246,10 @@ export function HabitCard({ habit, onChange, habitsList = [] }: HabitCardProps) 
             {todayProgress.completed ? (
               <>
                 <Check className="mr-1 h-4 w-4" />
-                Выполнено
+                Орындалды
               </>
             ) : (
-              "Отметить выполнение"
+              "Орындалуын белгілеу"
             )}
           </Button>
         </div>
@@ -258,18 +258,18 @@ export function HabitCard({ habit, onChange, habitsList = [] }: HabitCardProps) 
       <AlertDialog open={showConfirmArchive} onOpenChange={setShowConfirmArchive}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Вы хотите отправить привычку в архив?</AlertDialogTitle>
+            <AlertDialogTitle>Сіз әдетті мұрағатқа жібергіңіз келе ме?</AlertDialogTitle>
             <AlertDialogDescription>
-              Привычка "{habit.name}" будет перемещена в архив. Вы сможете восстановить её или удалить навсегда в разделе настроек.
+              "{habit.name}" әдеті мұрағатқа көшіріледі. Параметрлер бөлімінде оны қалпына келтіруге немесе біржола жоюға болады
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogCancel>Болдырмау</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleArchive}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Архив
+              Мұрағат
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

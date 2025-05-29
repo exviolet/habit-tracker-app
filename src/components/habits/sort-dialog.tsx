@@ -113,8 +113,8 @@ export function SortDialog({ habits, onClose, onSort }: SortDialogProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-card p-4 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-y-auto">
-        <h3 className="text-lg font-bold mb-2">Отсортировать привычки</h3>
-        <p className="text-sm text-muted-foreground mb-2">Зажмите элемент, чтобы перетащить</p>
+        <h3 className="text-lg font-bold mb-2">Әдеттерді сұрыптау</h3>
+        <p className="text-sm text-muted-foreground mb-2">Әдеттерді сұрыптау үшін сүйреп апарыңыз</p>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -129,10 +129,10 @@ export function SortDialog({ habits, onClose, onSort }: SortDialogProps) {
         </DndContext>
         <div className="flex justify-end gap-2 mt-4">
           <Button variant="outline" onClick={onClose}>
-            Отмена
+            Болдырмау
           </Button>
           <Button onClick={handleSave}>
-            <Check className="mr-2 h-4 w-4" /> Сохранить
+            <Check className="mr-2 h-4 w-4" /> Сақтау
           </Button>
         </div>
       </div>

@@ -53,16 +53,16 @@ export default function ArchivedHabitsPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold">Архив привычек</h1>
+        <h1 className="text-2xl font-bold">Әдеттер мұрағаты</h1>
       </div>
 
       {archivedHabits.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
           <p className="text-muted-foreground text-center">
-            Архив пуст. Здесь будут отображаться привычки, которые вы заархивировали.
+            Мұрағат бос. Мұнда сіз мұрағаттаған әдеттер көрсетіледі
           </p>
           <Link href="/habits">
-            <Button>Вернуться к привычкам</Button>
+            <Button>Әдеттерге оралу</Button>
           </Link>
         </div>
       ) : (
@@ -85,7 +85,7 @@ export default function ArchivedHabitsPage() {
               <CardFooter className="flex justify-end gap-2 pt-2">
                 <Button variant="outline" size="sm" onClick={() => handleRestore(habit.id)}>
                   <RotateCcw className="mr-2 h-4 w-4" />
-                  Восстановить
+                  Қалпына келтіру
                 </Button>
                 <Button
                   variant="destructive"
@@ -93,7 +93,7 @@ export default function ArchivedHabitsPage() {
                   onClick={() => setShowConfirmDelete(habit.id)}
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Удалить навсегда
+                  Біржола жою
                 </Button>
               </CardFooter>
             </Card>
@@ -107,18 +107,18 @@ export default function ArchivedHabitsPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Удалить привычку навсегда?</AlertDialogTitle>
+            <AlertDialogTitle>Әдетті біржола жою керек пе?</AlertDialogTitle>
             <AlertDialogDescription>
-              Это действие удалит привычку и всю её историю выполнения. Это действие нельзя отменить.
+             Бұл әрекет әдетті және оның бүкіл орындалу тарихын жояды. Бұл әрекетті қайтару мүмкін емес!
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogCancel>Болдырмау</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => handleDelete(showConfirmDelete!)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Удалить
+              Жою
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
