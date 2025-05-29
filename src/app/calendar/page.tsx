@@ -1,3 +1,4 @@
+// app/calendar/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { getHabits, getProgressForDate } from "@/lib/habits";
 import type { Habit } from "@/types/habit";
+import CircularProgressBar from "@/components/CircularProgressBar";
 
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -51,13 +53,15 @@ export default function CalendarPage() {
   // Получение выбранной привычки
   const selectedHabitData = habits.find(habit => habit.id === selectedHabit);
 
-  // Проверка статуса выполнения привычки в определенный день
-  const getStatusForDay = (date: Date) => {
-    if (!selectedHabitData) return "none";
+  // Получение прогресса для дня
+  const getProgressForDay = (date: Date) => {
+    if (!selectedHabitData) return { progress: 0, completed: false };
 
-    const progress = getProgressForDate(selectedHabitData.id, date);
-    if (!progress) return "none";
-    return progress.completed ? "completed" : "incomplete";
+    const progressData = getProgressForDate(selectedHabitData.id, date);
+    if (!progressData) return { progress: 0, completed: false };
+
+    const progress = progressData.value / selectedHabitData.goal; // Например, 2/3 = 0.66
+    return { progress: Math.min(progress, 1), completed: progressData.completed };
   };
 
   return (
@@ -127,31 +131,34 @@ export default function CalendarPage() {
 
                 {/* Дни месяца */}
                 {monthDays.map(day => {
-                  const status = getStatusForDay(day);
+                  const { progress, completed } = getProgressForDay(day);
+                  const isCurrentDay = isToday(day);
                   return (
                     <div
                       key={day.toString()}
-                      className={`h-9 flex items-center justify-center rounded-full text-sm
-                        ${isToday(day) ? "border border-primary" : ""}
-                        ${status === "completed" ? "bg-green-500/20 dark:bg-green-500/20" : ""}
-                        ${status === "incomplete" ? "bg-red-500/20 dark:bg-red-500/20" : ""}
+                      className={`h-10 w-10 flex items-center justify-center rounded-full text-sm relative
+                        ${isCurrentDay ? "border-2 border-primary" : ""}
                       `}
+                      style={{ aspectRatio: "1 / 1" }} // Убеждаемся, что ячейка квадратная
                     >
-                      {format(day, "d")}
+                      {/* Прогресс-бар в виде круга */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <CircularProgressBar
+                          progress={progress}
+                          size={32}
+                          strokeWidth={3}
+                        />
+                      </div>
+                      {/* Число дня с круглым контуром */}
+                      <span
+                        className={`relative z-10 `}
+                        style={{ aspectRatio: "1 / 1" }}
+                      >
+                        {format(day, "d")}
+                      </span>
                     </div>
                   );
                 })}
-              </div>
-
-              <div className="flex gap-2 mt-4 text-xs">
-                <div className="flex items-center gap-1">
-                  <div className="h-3 w-3 rounded-full bg-green-500/20" />
-                  <span>Орындалды</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="h-3 w-3 rounded-full bg-red-500/20" />
-                  <span>Орындалмады</span>
-                </div>
               </div>
             </CardContent>
           </Card>
