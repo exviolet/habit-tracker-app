@@ -1,46 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Habit Tracker
 
-## Getting Started
+A modern and intuitive application to help you build and maintain good habits. Track your progress, organize your goals, and stay motivated on your journey to self-improvement.
 
-To start working with the project you will need to download: `bun`, `npm`.
+## ✨ Features
 
-after downloading check the versions:
+- **Habit Management:** Easily create, edit, archive, and delete habits.
+- **Progress Tracking:** Log your daily progress and see how you're doing at a glance.
+- **Categorization:** Organize your habits with custom categories, colors, and icons.
+- **Calendar View:** Visualize your consistency and progress over time with a dedicated calendar.
+- **Customizable Goals:** Set specific goals for each habit (e.g., run 5 km, read 30 pages).
+- **Sorting:** Arrange your habits in the order that works best for you.
+- **Light & Dark Mode:** Switch between themes for your viewing comfort.
+- **Responsive Design:** Works beautifully on both desktop and mobile devices.
 
-`bun -v`, `npm -v`
+## 🛠️ Tech Stack
 
-then download the dependencies:
+- **Framework:** [Next.js](https://nextjs.org/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components:** [Shadcn/UI](https://ui.shadcn.com/)
+- **State Management:** React Hooks & `localStorage`
+- **Date & Time:** [date-fns](https://date-fns.org/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Package Manager:** [Bun](https://bun.sh/)
 
-`bun install`
+## 🚀 Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Make sure you have [Bun](httpss://bun.sh/docs/installation) installed on your system.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation & Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd habit-tracker-app
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2.  **Install dependencies:**
+    ```bash
+    bun install
+    ```
 
-## Learn More
+3.  **Run the development server:**
+    ```bash
+    bun run dev
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+4.  Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Script | Description                               | Command        |
+| :------| :-----------------------------------------| :--------------|
+| dev    | Runs the application in development mode. | `bun run dev`  |
+| build  | Creates an optimized production build.    | `bun run build`|
+| start  | Starts the built application.             | `bun run start`|
+| lint   | Main check script: Executes Biome (formatting + linting) and runs TypeScript type checking. | `bun run lint` |

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,21 +25,20 @@ import { getHabitById, updateHabit } from "@/lib/habits";
 import type { FrequencyType, Habit } from "@/types/habit";
 import { IconSelector } from "@/components/habits/icon-selector";
 
-export default function EditHabitPage({
-  params,
-}: {
-  params: {
-    id: string;
-  };
-}) {
+function EditHabitContent() {
   const router = useRouter();
-  const { id } = params;
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
 
   const [habit, setHabit] = useState<Habit | null>(null);
   const [formData, setFormData] = useState<Partial<Habit>>({});
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
+    if (!id) {
+      setNotFound(true);
+      return;
+    }
     const loadedHabit = getHabitById(id);
     if (loadedHabit) {
       setHabit(loadedHabit);
@@ -231,5 +230,13 @@ export default function EditHabitPage({
         </form>
       </Card>
     </div>
+  );
+}
+
+export default function EditHabitPage() {
+  return (
+    <Suspense fallback={<div>Жүктелуде...</div>}>
+      <EditHabitContent />
+    </Suspense>
   );
 }

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">habit-tracker-app</string>
+    <string name="title_activity_main">habit-tracker-app</string>
+    <string name="package_name">com.habittracker.app</string>
+    <string name="custom_url_scheme">com.habittracker.app</string>
+</resources>

@@ -175,7 +175,7 @@ export function HabitCard({ habit, onChange, habitsList = [] }: HabitCardProps) 
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href={`/edit-habit/${habit.id}`}>
+                <Link href={`/edit-habit?id=${habit.id}`}>
                   <Edit className="mr-2 h-4 w-4" />
                   <span>Өңдеу</span>
                 </Link>
