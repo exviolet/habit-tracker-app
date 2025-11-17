@@ -4,9 +4,8 @@ import { useEffect } from "react";
 import { redirect } from "next/navigation";
 
 export default function Home() {
-  // Перенаправление на страницу привычек
   useEffect(() => {
-    redirect('/habits');
+    redirect("/habits");
   }, []);
 
   return null;

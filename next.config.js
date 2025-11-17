@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Опции для конфигурации Next.js
+  allowedDevOrigins: ["192.168.1.85"],
   images: {
-    domains: ['images.unsplash.com', 'via.placeholder.com'],
+    domains: ["images.unsplash.com", "via.placeholder.com"],
   },
-  // Опции для оптимизации
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -14,11 +13,10 @@ const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: ["@svgr/webpack"],
     });
     return config;
   },
 };
 
-// Экспортируем с помощью ESM
 export default nextConfig;

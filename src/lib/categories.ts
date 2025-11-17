@@ -1,4 +1,5 @@
 // lib/categories.ts
+import { v4 as uuidv4 } from "uuid";
 import type { Category } from "@/types/category";
 
 const CATEGORIES_KEY = "categories";
@@ -17,13 +18,15 @@ export function saveCategories(categories: Category[]): void {
 }
 
 // Создать новую категорию
-export function createCategory(category: Omit<Category, "id">): Category | null {
+export function createCategory(
+  category: Omit<Category, "id">,
+): Category | null {
   const categories = getCategories();
   if (categories.length >= MAX_CATEGORIES) {
     return null; // Лимит категорий достигнут
   }
   const newCategory: Category = {
-    id: crypto.randomUUID(),
+    id: uuidv4(),
     ...category,
   };
   const updatedCategories = [...categories, newCategory];
@@ -32,7 +35,10 @@ export function createCategory(category: Omit<Category, "id">): Category | null 
 }
 
 // Обновить категорию
-export function updateCategory(id: string, updates: Partial<Category>): Category | null {
+export function updateCategory(
+  id: string,
+  updates: Partial<Category>,
+): Category | null {
   const categories = getCategories();
   const index = categories.findIndex((cat) => cat.id === id);
   if (index === -1) return null;
@@ -45,7 +51,9 @@ export function updateCategory(id: string, updates: Partial<Category>): Category
 // Новая функция для удаления категории
 export function deleteCategory(categoryId: string): boolean {
   const categories = getCategories();
-  const filteredCategories = categories.filter((category) => category.id !== categoryId);
+  const filteredCategories = categories.filter(
+    (category) => category.id !== categoryId,
+  );
 
   if (filteredCategories.length === categories.length) {
     return false; // Категория не найдена

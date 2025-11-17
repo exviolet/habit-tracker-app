@@ -1,7 +1,14 @@
 // lib/habits.ts
 
+import { v4 as uuidv4 } from "uuid";
 import { normalizeDate } from "./utils";
-import type { Habit, NewHabit, HabitProgress, FrequencyType, WeekdayType } from "@/types/habit";
+import type {
+  Habit,
+  NewHabit,
+  HabitProgress,
+  FrequencyType,
+  WeekdayType,
+} from "@/types/habit";
 
 // Интерфейс для сырых данных из localStorage
 interface RawHabit {
@@ -35,22 +42,24 @@ export function getHabits(): Habit[] {
 
   try {
     const rawHabits = JSON.parse(habitsJson) as RawHabit[];
-    return rawHabits.map((habit) => ({
-      id: habit.id,
-      name: habit.name,
-      description: habit.description,
-      frequency: habit.frequency as FrequencyType,
-      specificDays: habit.specificDays as WeekdayType[] | undefined,
-      icon: habit.icon,
-      goal: habit.goal,
-      createdAt: new Date(habit.createdAt),
-      progress: habit.progress.map((p) => ({
-        date: new Date(p.date),
-        value: p.value,
-        completed: p.completed,
-      })),
-      categoryIds: habit.categoryIds || [],
-    })).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); // Сортировка по умолчанию
+    return rawHabits
+      .map((habit) => ({
+        id: habit.id,
+        name: habit.name,
+        description: habit.description,
+        frequency: habit.frequency as FrequencyType,
+        specificDays: habit.specificDays as WeekdayType[] | undefined,
+        icon: habit.icon,
+        goal: habit.goal,
+        createdAt: new Date(habit.createdAt),
+        progress: habit.progress.map((p) => ({
+          date: new Date(p.date),
+          value: p.value,
+          completed: p.completed,
+        })),
+        categoryIds: habit.categoryIds || [],
+      }))
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); // Сортировка по умолчанию
   } catch (e) {
     console.error("Error parsing habits from localStorage", e);
     return [];
@@ -122,7 +131,10 @@ export function getArchivedHabits(): Habit[] {
 
 export function saveArchivedHabits(archivedHabits: Habit[]): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(ARCHIVED_HABITS_STORAGE_KEY, JSON.stringify(archivedHabits));
+  localStorage.setItem(
+    ARCHIVED_HABITS_STORAGE_KEY,
+    JSON.stringify(archivedHabits),
+  );
 }
 
 export function removeCategoryFromHabits(categoryId: string): void {
@@ -151,7 +163,7 @@ export function createHabit(newHabit: NewHabit): Habit {
 
   const habit: Habit = {
     ...newHabit,
-    id: crypto.randomUUID(),
+    id: uuidv4(),
     createdAt: new Date(),
     progress: [],
     categoryIds: newHabit.categoryIds || [],
@@ -162,7 +174,10 @@ export function createHabit(newHabit: NewHabit): Habit {
   return habit;
 }
 
-export function updateHabit(id: string, updatedHabit: Partial<Habit>): Habit | undefined {
+export function updateHabit(
+  id: string,
+  updatedHabit: Partial<Habit>,
+): Habit | undefined {
   const habits = getHabits();
   const habitIndex = habits.findIndex((habit) => habit.id === id);
 
@@ -172,7 +187,8 @@ export function updateHabit(id: string, updatedHabit: Partial<Habit>): Habit | u
   updatedHabits[habitIndex] = {
     ...updatedHabits[habitIndex],
     ...updatedHabit,
-    categoryIds: updatedHabit.categoryIds || updatedHabits[habitIndex].categoryIds || [],
+    categoryIds:
+      updatedHabit.categoryIds || updatedHabits[habitIndex].categoryIds || [],
   };
 
   saveHabits(updatedHabits);
@@ -213,7 +229,9 @@ export function restoreHabit(id: string): boolean {
   if (habitIndex === -1) return false;
 
   const habitToRestore = archivedHabits[habitIndex];
-  const updatedArchivedHabits = archivedHabits.filter((habit) => habit.id !== id);
+  const updatedArchivedHabits = archivedHabits.filter(
+    (habit) => habit.id !== id,
+  );
   saveArchivedHabits(updatedArchivedHabits);
 
   const habits = getHabits();
@@ -225,7 +243,9 @@ export function restoreHabit(id: string): boolean {
 
 export function deleteArchivedHabit(id: string): boolean {
   const archivedHabits = getArchivedHabits();
-  const filteredArchivedHabits = archivedHabits.filter((habit) => habit.id !== id);
+  const filteredArchivedHabits = archivedHabits.filter(
+    (habit) => habit.id !== id,
+  );
 
   if (filteredArchivedHabits.length === archivedHabits.length) return false;
 
@@ -236,7 +256,7 @@ export function deleteArchivedHabit(id: string): boolean {
 export function updateHabitProgress(
   habitId: string,
   date: Date,
-  value: number
+  value: number,
 ): Habit | undefined {
   const habits = getHabits();
   const habitIndex = habits.findIndex((habit) => habit.id === habitId);
@@ -244,13 +264,15 @@ export function updateHabitProgress(
   if (habitIndex === -1) {
     // Проверим в архиве
     const archivedHabits = getArchivedHabits();
-    const archivedHabitIndex = archivedHabits.findIndex((habit) => habit.id === habitId);
+    const archivedHabitIndex = archivedHabits.findIndex(
+      (habit) => habit.id === habitId,
+    );
     if (archivedHabitIndex === -1) return undefined;
 
     const habit = archivedHabits[archivedHabitIndex];
     const normalizedDate = normalizeDate(date);
     const progressIndex = habit.progress.findIndex(
-      (p) => normalizeDate(p.date).getTime() === normalizedDate.getTime()
+      (p) => normalizeDate(p.date).getTime() === normalizedDate.getTime(),
     );
 
     const updatedArchivedHabits = [...archivedHabits];
@@ -285,7 +307,7 @@ export function updateHabitProgress(
   const habit = habits[habitIndex];
   const normalizedDate = normalizeDate(date);
   const progressIndex = habit.progress.findIndex(
-    (p) => normalizeDate(p.date).getTime() === normalizedDate.getTime()
+    (p) => normalizeDate(p.date).getTime() === normalizedDate.getTime(),
   );
 
   const updatedHabits = [...habits];
@@ -317,18 +339,25 @@ export function updateHabitProgress(
   return updatedHabits[habitIndex];
 }
 
-export function getProgressForDate(habitId: string, date: Date): HabitProgress | undefined {
+export function getProgressForDate(
+  habitId: string,
+  date: Date,
+): HabitProgress | undefined {
   const habit = getHabitById(habitId);
   if (habit) {
     const normalizedTarget = normalizeDate(date).getTime();
-    return habit.progress.find((p) => normalizeDate(p.date).getTime() === normalizedTarget);
+    return habit.progress.find(
+      (p) => normalizeDate(p.date).getTime() === normalizedTarget,
+    );
   }
 
   const archivedHabits = getArchivedHabits();
   const archivedHabit = archivedHabits.find((habit) => habit.id === habitId);
   if (archivedHabit) {
     const normalizedTarget = normalizeDate(date).getTime();
-    return archivedHabit.progress.find((p) => normalizeDate(p.date).getTime() === normalizedTarget);
+    return archivedHabit.progress.find(
+      (p) => normalizeDate(p.date).getTime() === normalizedTarget,
+    );
   }
 
   return undefined;

@@ -1,5 +1,5 @@
 // components/CircularProgressBar.tsx
-import React from "react";
+import type React from "react";
 import { useTheme } from "next-themes";
 
 interface CircularProgressBarProps {

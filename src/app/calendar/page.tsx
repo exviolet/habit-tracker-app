@@ -2,7 +2,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, subMonths, getDay, isToday } from "date-fns";
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  addMonths,
+  subMonths,
+  getDay,
+  isToday,
+} from "date-fns";
 import { ka, kk, ru } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,23 +46,18 @@ export default function CalendarPage() {
 
   const startWeekDay = getDay(monthStart);
 
-  // Названия дней недели
   const weekDays = ["Дс", "Сс", "Ср", "Бс", "Жм", "Сб", "Жк"];
 
-  // Переход к следующему месяцу
   const nextMonth = () => {
     setCurrentDate(addMonths(currentDate, 1));
   };
 
-  // Переход к предыдущему месяцу
   const prevMonth = () => {
     setCurrentDate(subMonths(currentDate, 1));
   };
 
-  // Получение выбранной привычки
-  const selectedHabitData = habits.find(habit => habit.id === selectedHabit);
+  const selectedHabitData = habits.find((habit) => habit.id === selectedHabit);
 
-  // Получение прогресса для дня
   const getProgressForDay = (date: Date) => {
     if (!selectedHabitData) return { progress: 0, completed: false };
 
@@ -61,7 +65,10 @@ export default function CalendarPage() {
     if (!progressData) return { progress: 0, completed: false };
 
     const progress = progressData.value / selectedHabitData.goal; // Например, 2/3 = 0.66
-    return { progress: Math.min(progress, 1), completed: progressData.completed };
+    return {
+      progress: Math.min(progress, 1),
+      completed: progressData.completed,
+    };
   };
 
   return (
@@ -72,7 +79,8 @@ export default function CalendarPage() {
         <Card>
           <CardContent className="p-6">
             <p className="text-center text-muted-foreground">
-              Сізде әлі әдеттеріңіз жоқ. Күнтізбеде бақылау үшін әдеттерді жасаңыз.
+              Сізде әлі әдеттеріңіз жоқ. Күнтізбеде бақылау үшін әдеттерді
+              жасаңыз.
             </p>
           </CardContent>
         </Card>
@@ -80,15 +88,12 @@ export default function CalendarPage() {
         <>
           <div className="grid gap-2">
             <label className="text-sm font-medium">Әдетті таңдаңыз</label>
-            <Select
-              value={selectedHabit}
-              onValueChange={setSelectedHabit}
-            >
+            <Select value={selectedHabit} onValueChange={setSelectedHabit}>
               <SelectTrigger>
                 <SelectValue placeholder="Әдетті таңдаңыз" />
               </SelectTrigger>
               <SelectContent>
-                {habits.map(habit => (
+                {habits.map((habit) => (
                   <SelectItem key={habit.id} value={habit.id}>
                     {habit.name}
                   </SelectItem>
@@ -113,7 +118,7 @@ export default function CalendarPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-7 gap-1 mb-2">
-                {weekDays.map(day => (
+                {weekDays.map((day) => (
                   <div
                     key={day}
                     className="text-center text-sm font-medium py-1"
@@ -124,13 +129,16 @@ export default function CalendarPage() {
               </div>
 
               <div className="grid grid-cols-7 gap-1">
-                {/* Пустые клетки для правильного начала месяца */}
-                {Array.from({ length: startWeekDay === 0 ? 6 : startWeekDay - 1 }).map((_, index) => (
-                  <div key={`empty-start-${currentDate.getMonth()}-${index}`} className="h-9" />
+                {Array.from({
+                  length: startWeekDay === 0 ? 6 : startWeekDay - 1,
+                }).map((_, index) => (
+                  <div
+                    key={`empty-start-${currentDate.getMonth()}-${index}`}
+                    className="h-9"
+                  />
                 ))}
 
-                {/* Дни месяца */}
-                {monthDays.map(day => {
+                {monthDays.map((day) => {
                   const { progress, completed } = getProgressForDay(day);
                   const isCurrentDay = isToday(day);
                   return (
@@ -139,9 +147,8 @@ export default function CalendarPage() {
                       className={`h-10 w-10 flex items-center justify-center rounded-full text-sm relative
                         ${isCurrentDay ? "border-2 border-primary" : ""}
                       `}
-                      style={{ aspectRatio: "1 / 1" }} // Убеждаемся, что ячейка квадратная
+                      style={{ aspectRatio: "1 / 1" }}
                     >
-                      {/* Прогресс-бар в виде круга */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <CircularProgressBar
                           progress={progress}
@@ -149,9 +156,8 @@ export default function CalendarPage() {
                           strokeWidth={3}
                         />
                       </div>
-                      {/* Число дня с круглым контуром */}
                       <span
-                        className={`relative z-10 `}
+                        className={"relative z-10 "}
                         style={{ aspectRatio: "1 / 1" }}
                       >
                         {format(day, "d")}
